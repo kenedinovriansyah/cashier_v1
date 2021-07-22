@@ -1,0 +1,100 @@
+import json
+from faker import Faker
+from rest_framework import status
+from rest_framework.test import APIClient
+from django.urls import reverse
+import unittest
+import logging
+from django.contrib.auth.models import User
+from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
+
+faker = Faker()
+
+with open('token.txt', 'r') as r:
+    readme = r.read()
+
+tokens = None
+try:
+    tokens = VerifyJSONWebTokenSerializer().validate({
+        'token': readme
+    })
+except:
+    tokens = None
+
+
+class Usertests(unittest.TestCase):
+    def setUp(self) :
+        self.e = APIClient()
+        self.logger = logging.getLogger(__name__)
+
+    def test_user(self):
+        self.logger.critical("usertests")
+
+
+    @unittest.skipIf(User.objects.count() == 0, "user not have data")
+    def test_user_login(self):
+        urls = reverse('authtoken')
+        user = User.objects.first()
+        data ={
+            'username': user.username,
+            'password': 'Password@123'
+        }
+        response = self.e.post(urls,data,format="json")
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertNotEqual(response.data['token'], None)
+        self.logger.info("user login")
+        with open('token.txt','w') as w:
+            w.write(response.data['token'])
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_user_refresh_token(self):
+        urls = reverse('refresh-authtoken')
+        data = {
+            'token': readme
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertNotEqual(response.data['token'], None)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('refresh token')
+
+    @unittest.skipIf(not tokens, 'token is expires')
+    def test_user_verify_token(self):
+        urls = reverse('verify-authtoken')
+        data = {
+            'token': readme
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertNotEqual(response.data['token'], None)
+        self.logger.info('verify token')
+
+    def test_user_create(self):
+        urls = reverse('user-list')
+        data = {
+            'username': faker.user_name(),
+            'email': faker.email(),
+            'first_name': faker.first_name(),
+            'last_name': faker.last_name(),
+            'password': 'Password@123',
+            'password_confirmation': 'Password@123'
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertEqual(response.data['message'], 'Accounts has been created')
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        self.logger.info("create user")
+
+    @unittest.skipIf(User.objects.count() == 0 ,"user not have data")
+    def test_user_reset(self):
+        urls = reverse('user-list')
+        user = User.objects.first()
+        data = {
+            'token': user.username,
+            'type': 'reset'
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertEqual(response.data['message'], 'Account has been reset, please check your email inbox for a new password sandi')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('reset user')
+
+    
+

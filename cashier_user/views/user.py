@@ -1,0 +1,35 @@
+from rest_framework import serializers, status, permissions
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from cashier_user.serializer.user import UserSerializers, UserModelSerializer
+from django.utils.translation import gettext as _
+
+class UserModelViewSets(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+    fields_serializer = UserSerializers
+
+    def get_permissions(self):
+        if self.action == 'create':
+            permission_classes = [permissions.AllowAny,]
+        else:
+            permission_classes = [permissions.IsAuthenticated,]
+        return [permission() for permission in permission_classes]
+
+    def create(self, request):
+        serializer = self.fields_serializer(data=request.data)
+        serializer.context['types'] = 'create'
+        message = _("Accounts has been created")
+        _s = status.HTTP_201_CREATED
+        if request.data.get('type') == 'reset':
+            serializer.context['types'] = 'reset'
+            message = _("Account has been reset, please check your email inbox for a new password sandi")
+            _s = status.HTTP_200_OK
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': message
+            },status=_s)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
