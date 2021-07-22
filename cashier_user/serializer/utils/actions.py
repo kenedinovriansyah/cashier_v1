@@ -28,8 +28,17 @@ class UserActions:
         create.save()
         return create
 
-    def u_u(validated_data):
-        pass
+    def u_u(instance,validated_data):
+        instance.first_name = validated_data.get('first_name')
+        instance.last_name = validated_data.get('last_name')
+        instance.username = validated_data.get('username')
+        accounts = instance.accounts_set.first()
+        if accounts:
+            pass
+        instance.save()
+        return instance
+
+
 
     def r_u(validated_data):
         check = User.objects.filter(Q(username=validated_data.get('token'))|Q(email=validated_data.get('token'))).first()
@@ -40,3 +49,26 @@ class UserActions:
         mail = EmailMessage("Subject", "Hello Worlds", os.environ.get('username'),[check.email])
         mail.send()
         return mail
+
+    def u_e(instance,validated_data):
+        if not instance.check_password(validated_data.get('password')):
+            raise serializers.ValidationError({
+                'message': _("Password is wrong")
+            })
+        instance.email = validated_data.get('email')
+        instance.save()
+        return instance
+
+    def u_p(instance,validated_data):
+        if not instance.check_password(validated_data.get('old_password')):
+            raise serializers.ValidationError({
+                'message': _("Password is wrong")
+            })
+        if validated_data.get('password') != validated_data.get('password_confirmation'):
+            raise serializers.ValidationError({
+                'message': _("Password don't match, please check again")
+            })
+        instance.password = validated_data.get('password')
+        instance.set_password(validated_data.get('password_confirmation'))
+        instance.save()
+        return instance

@@ -1,1 +1,1 @@
-["core.apps.CoreConfig"]
+["core.apps.CoreConfig", "database"]

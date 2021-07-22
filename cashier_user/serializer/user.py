@@ -21,7 +21,12 @@ class UserSerializers(Base):
         pass
 
     def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+        if self.context['types'] == 'updated':
+            return self.actions.u_u(instance,validated_data)
+        elif self.context['types'] == 'password':
+            return self.actions.u_p(instance,validated_data)
+        elif self.context['types'] == 'email':
+            return self.actions.u_e(instance,validated_data)
 
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:

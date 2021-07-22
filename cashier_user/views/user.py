@@ -33,3 +33,25 @@ class UserModelViewSets(ModelViewSet):
                 'message': message
             },status=_s)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateUserAPIView(APIView):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+    fields_serializer = UserSerializers
+
+    def post(self,request):
+        serializer = self.fields_serializer(request.user,data=request.data)
+        serializer.context['types'] = 'updated'
+        message = _("Profile has been updated")
+        if request.data.get('types') == 'email':
+            serializer.context['types'] = 'email'
+            message = _("Email has been updated")
+        elif request.data.get('types') == 'password':
+            serializer.context['types'] = 'password'
+            message = _("Password has been updated")
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': message
+            },status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

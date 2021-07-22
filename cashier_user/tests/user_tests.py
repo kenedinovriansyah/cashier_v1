@@ -1,3 +1,4 @@
+from database.models.accounts import choice
 import json
 from faker import Faker
 from rest_framework import status
@@ -96,5 +97,53 @@ class Usertests(unittest.TestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.logger.info('reset user')
 
-    
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_user_zupdated(self):
+        urls = reverse('updated-accounts')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        data = {
+            'username': faker.user_name(),
+            'first_name': faker.first_name(),
+            'last_name': faker.last_name(),
+            'gender': choice.male,
+            'country': faker.country(),
+            'state': faker.state(),
+            'address': faker.address(),
+            'postal_code': faker.postalcode(),
+            'type': choice.owner
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertEqual(response.data['message'], 'Profile has been updated')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('update profile')
+
+    @unittest.skipIf(not tokens, 'tokens is expiress')
+    def test_user_updated_email(self):
+        urls = reverse('updated-accounts')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        data = {
+            'email': faker.email(),
+            'password': 'Password@123',
+            'types': 'email'
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertEqual(response.data['message'], 'Email has been updated')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('updated email')
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_user_updated_password(self):
+        urls = reverse('updated-accounts')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer "+ readme)
+        data = {
+            'old_password': 'Password@123',
+            'password': 'Password@123',
+            'password_confirmation': 'Password@123',
+            'types': 'password'
+        }
+        response = self.e.post(urls,data,format='json')
+        self.assertEqual(response.data['message'], 'Password has been updated')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('updated password')
 
