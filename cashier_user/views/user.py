@@ -23,7 +23,7 @@ class UserModelViewSets(ModelViewSet):
         serializer.context['types'] = 'create'
         message = _("Accounts has been created")
         _s = status.HTTP_201_CREATED
-        if request.data.get('type') == 'reset':
+        if request.data.get('types') == 'reset':
             serializer.context['types'] = 'reset'
             message = _("Account has been reset, please check your email inbox for a new password sandi")
             _s = status.HTTP_200_OK
@@ -33,6 +33,14 @@ class UserModelViewSets(ModelViewSet):
                 'message': message
             },status=_s)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class AccountsMeAPIView(APIView):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+    
+    def get(self, request):
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 class UpdateUserAPIView(APIView):
     queryset = User.objects.all()
@@ -49,6 +57,9 @@ class UpdateUserAPIView(APIView):
         elif request.data.get('types') == 'password':
             serializer.context['types'] = 'password'
             message = _("Password has been updated")
+        elif request.data.get('types') == 'employe':
+            serializer.context['types'] = 'employe'
+            message = _("Employe has been add")
         if serializer.is_valid():
             serializer.save()
             return Response({

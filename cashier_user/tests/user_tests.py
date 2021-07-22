@@ -90,7 +90,7 @@ class Usertests(unittest.TestCase):
         user = User.objects.first()
         data = {
             'token': user.username,
-            'type': 'reset'
+            'types': 'reset'
         }
         response = self.e.post(urls,data,format='json')
         self.assertEqual(response.data['message'], 'Account has been reset, please check your email inbox for a new password sandi')
@@ -111,6 +111,8 @@ class Usertests(unittest.TestCase):
             'state': faker.state(),
             'address': faker.address(),
             'postal_code': faker.postalcode(),
+            'phone': faker.phone_number(),
+            'phone_fax': '+91%s' % faker.msisdn()[3:],
             'type': choice.owner
         }
         response = self.e.post(urls,data,format='json')
@@ -147,3 +149,32 @@ class Usertests(unittest.TestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.logger.info('updated password')
 
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_user_add_employe(self):
+        urls = reverse('updated-accounts')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        data = {
+            'username': faker.user_name(),
+            'email': faker.email(),
+            'first_name': faker.first_name(),
+            'last_name': faker.last_name(),
+            'gender': choice.male,
+            'country': faker.country(),
+            'state': faker.state(),
+            'address': faker.address(),
+            'postal_code': faker.postalcode(),
+            'type': choice.owner,
+            'types': 'employe'
+        }
+        response = self.e.post(urls,data,format='multipart')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], 'Employe has been add')
+        self.logger.info('add employe')
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_user_me(self):
+        urls = reverse('me')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.get(urls,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('user me')

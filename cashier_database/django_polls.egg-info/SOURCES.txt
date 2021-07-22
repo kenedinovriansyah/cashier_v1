@@ -13,10 +13,15 @@ database/models.py
 database/tests.py
 database/views.py
 database/migrations/0001_initial.py
+database/migrations/0002_auto_20210722_1503.py
+database/migrations/0003_accounts_employe.py
+database/migrations/0004_alter_phone_phone_fax.py
 database/migrations/__init__.py
 database/models/__init__.py
 database/models/accounts.py
 database/models/base.py
+database/models/category.py
+database/models/product.py
 django_polls.egg-info/PKG-INFO
 django_polls.egg-info/SOURCES.txt
 django_polls.egg-info/dependency_links.txt

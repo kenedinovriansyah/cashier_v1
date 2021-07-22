@@ -1,3 +1,4 @@
+from database.models.accounts import Address, Phone, Type, choice
 from django.contrib.auth.models import User
 import os
 from django.db.models import Q
@@ -5,6 +6,7 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 from django.core.mail import EmailMessage
 import dotenv
+import uuid
 
 dotenv.load_dotenv()
 
@@ -26,6 +28,18 @@ class UserActions:
         )
         create.set_password(validated_data.get('password_confirmation'))
         create.save()
+        address = Address(public_id=str(uuid.uuid4()))
+        address.save()
+        phone = Phone(public_id=str(uuid.uuid4()))
+        phone.save()
+        type = Type(public_id=str(uuid.uuid4()),type=choice.owner)
+        type.save()
+        create.accounts_set.create(
+            public_id=str(uuid.uuid4()),
+            address=address,
+            phone=phone,
+            type=type
+        )
         return create
 
     def u_u(instance,validated_data):
@@ -34,7 +48,30 @@ class UserActions:
         instance.username = validated_data.get('username')
         accounts = instance.accounts_set.first()
         if accounts:
-            pass
+            accounts.gender = validated_data.get('gender')
+            if validated_data.get('avatar'):
+                if accounts.avatar:
+                    splits = str(accounts.avatar).split('/')
+                    os.remove('rm media/accounts/%s' % splits[len(splits) - 1])
+                accounts.avatar = validated_data.get('avatar')
+            # Address
+            accounts.address.country = validated_data.get('country')
+            accounts.address.state = validated_data.get('state')
+            accounts.address.city = validated_data.get('city')
+            accounts.address.address = validated_data.get('address')
+            accounts.address.postal_code = validated_data.get('postal_code')
+            accounts.address.save()
+            # Phone
+            accounts.phone.phone = validated_data.get('phone')
+            accounts.phone.phone_fax = validated_data.get('phone_fax')
+            accounts.phone.save()
+            # Type
+            accounts.type.type = validated_data.get('type')
+            accounts.type.save()
+        accounts.save()
+        instance.save()
+        return instance
+
         instance.save()
         return instance
 
@@ -72,3 +109,4 @@ class UserActions:
         instance.set_password(validated_data.get('password_confirmation'))
         instance.save()
         return instance
+
