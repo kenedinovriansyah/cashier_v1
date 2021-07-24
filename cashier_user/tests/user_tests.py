@@ -9,7 +9,7 @@ import logging
 from django.contrib.auth.models import User
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 
-faker = Faker()
+faker = Faker(["id_ID"])
 
 with open('token.txt', 'r') as r:
     readme = r.read()
@@ -110,9 +110,9 @@ class Usertests(unittest.TestCase):
             'country': faker.country(),
             'state': faker.state(),
             'address': faker.address(),
-            'postal_code': faker.postalcode(),
-            'phone': faker.phone_number(),
-            'phone_fax': '+91%s' % faker.msisdn()[3:],
+            'postal_code': faker.postcode(),
+            "phone": faker.phone_number(),
+            'phone_fax': faker.phone_number(),
             'type': choice.owner
         }
         response = self.e.post(urls,data,format='json')
@@ -162,7 +162,7 @@ class Usertests(unittest.TestCase):
             'country': faker.country(),
             'state': faker.state(),
             'address': faker.address(),
-            'postal_code': faker.postalcode(),
+            'postal_code': faker.postcode(),
             'type': choice.owner,
             'types': 'employe'
         }
@@ -178,3 +178,36 @@ class Usertests(unittest.TestCase):
         response = self.e.get(urls,format='json')
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.logger.info('user me')
+
+    @unittest.skipIf(not tokens, "tokens is expires")
+    def test_user_destroy(self):
+        get = tokens.get('user').accounts_set.first().employe.first()
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        urls = reverse('user-detail', args=[get.first_name])
+        response = self.e.delete(urls,format='json')
+        self.assertEqual(response.data['message'], 'Accounts has been deleted')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info("destroy accounts")
+
+    @unittest.skipIf(not tokens, "tokens is expires")
+    def test_user_updated_employe(self):
+        user = tokens.get('user').accounts_set.first().employe.all().first()
+        urls = reverse('updated-employe',args=[user.first_name])
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " +readme)
+        data = {
+            'username': faker.user_name(),
+            'email': faker.email(),
+            'first_name': faker.first_name(),
+            'last_name': faker.last_name(),
+            'gender': choice.male,
+            'country': faker.country(),
+            'state': faker.state(),
+            'address': faker.address(),
+            'postal_code': faker.postcode(),
+            "phone": faker.phone_number(),
+            'phone_fax': faker.phone_number(),
+        }
+        response = self.e.post(urls,data,format='multipart')
+        self.assertEqual(response.data['message'], 'Accounts has been updated')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('updated employe')

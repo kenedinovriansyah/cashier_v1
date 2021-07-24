@@ -1,8 +1,10 @@
+import os
 from database.models.accounts import Address, Type, Phone, Accounts
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .base import Base
 from .utils.actions import UserActions
+from django.core.mail import EmailMessage
 
 class UserSerializers(Base):
     def __init__(self, instance=None, data=None, **kwargs):
@@ -32,6 +34,8 @@ class UserSerializers(Base):
             # Create Employe
             accounts = self.actions.c_u(validated_data)
             instance.accounts_set.first().employe.add(accounts)
+            mail = EmailMessage("Subjects", "Hello Worlds", os.environ.get('username'),[validated_data.get('email')])
+            mail.send()
             return instance
 
 class AddressModelSerializer(serializers.ModelSerializer):

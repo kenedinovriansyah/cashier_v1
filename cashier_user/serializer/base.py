@@ -33,8 +33,8 @@ class BaseAddressSerializer(serializers.Serializer):
         abstract = True
 
 class BasePhoneSerializer(serializers.Serializer):
-    phone_numbers = PhoneNumberField(required=False)
-    phone_fax = PhoneNumberField(required=False)
+    phone = serializers.CharField(max_length=225,required=False)
+    phone_fax = serializers.CharField(max_length=225,required=False)
 
 class BaseTypeSerializer(serializers.Serializer):
     type = serializers.IntegerField(default=choice.member, required=False)

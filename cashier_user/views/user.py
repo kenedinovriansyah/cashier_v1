@@ -34,6 +34,38 @@ class UserModelViewSets(ModelViewSet):
             },status=_s)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+    def destroy(self, request, pk):
+        check = request.user.accounts_set.first().employe.filter(first_name=pk)
+        if not check.exists():
+            return Response({
+                'message': _("Accounts not found")
+            },status=status.HTTP_404_NOT_FOUND)
+        check.first().delete()
+        return Response({
+            'message': _("Accounts has been deleted")
+        },status=status.HTTP_200_OK)
+
+class UpdateEmployeAPIView(APIView):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+    fields_serializer = UserSerializers
+
+    def post(self, request, pk):
+        filter = self.queryset.filter(first_name=pk).first()
+        check = request.user.accounts_set.first().employe.filter(first_name=filter.first_name)
+        if not check.exists():
+            return Response({
+                'message': _('Accounts not found')
+            },status=status.HTTP_404_NOT_FOUND)
+        serializer = self.fields_serializer(check.first(), data=request.data)
+        serializer.context['types'] = 'updated'
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': _('Accounts has been updated')
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
 class AccountsMeAPIView(APIView):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer

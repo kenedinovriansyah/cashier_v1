@@ -62,7 +62,7 @@ class UserActions:
             accounts.address.postal_code = validated_data.get('postal_code')
             accounts.address.save()
             # Phone
-            accounts.phone.phone = validated_data.get('phone')
+            accounts.phone.phone_numbers = validated_data.get('phone')
             accounts.phone.phone_fax = validated_data.get('phone_fax')
             accounts.phone.save()
             # Type
@@ -72,8 +72,6 @@ class UserActions:
         instance.save()
         return instance
 
-        instance.save()
-        return instance
 
 
 
