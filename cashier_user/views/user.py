@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers, status, permissions
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -40,10 +41,24 @@ class UserModelViewSets(ModelViewSet):
             return Response({
                 'message': _("Accounts not found")
             },status=status.HTTP_404_NOT_FOUND)
-        check.first().delete()
+        if not settings.TEST:
+            check.first().delete()
         return Response({
-            'message': _("Accounts has been deleted")
+            'message': _("Employe has been deleted")
         },status=status.HTTP_200_OK)
+
+class DestroyEmployeManyToMany(APIView):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+    fields_serializer = UserSerializers
+
+    def delete(self, request, objects):
+        for i in str(objects).split(","):
+            check = self.queryset.filter(id=i).first()
+            check.delete()
+        return Response({
+            'message': _('Employe has been deletede')
+        }, status=status.HTTP_200_OK)
 
 class UpdateEmployeAPIView(APIView):
     queryset = User.objects.all()
@@ -52,7 +67,7 @@ class UpdateEmployeAPIView(APIView):
 
     def post(self, request, pk):
         filter = self.queryset.filter(accounts__public_id=pk).first()
-        check = request.user.accounts_set.first().employe.filter(first_name=filter.first_name)
+        check = request.user.accounts_set.first().employe.filter(accounts__public_id=filter.accounts_set.first().public_id)
         if not check.exists():
             return Response({
                 'message': _('Accounts not found')
@@ -61,8 +76,10 @@ class UpdateEmployeAPIView(APIView):
         serializer.context['types'] = 'updated'
         if serializer.is_valid():
             serializer.save()
+            retrieve = User.objects.filter(accounts__public_id=pk).first()
             return Response({
-                'message': _('Accounts has been updated')
+                'message': _('Accounts has been updated'),
+                'data': self.serializer_class(retrieve).data
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 

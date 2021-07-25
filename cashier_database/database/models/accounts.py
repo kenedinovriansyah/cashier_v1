@@ -20,7 +20,7 @@ class Type(models.Model):
 
 class Phone(models.Model):
     public_id = models.CharField(max_length=225, null=False ,unique=True)
-    phone_numbers = PhoneNumberField(blank=True, null=True, unique=True)
+    phone_numbers = PhoneNumberField(blank=True, null=True, unique=False)
     phone_fax = PhoneNumberField(blank=True, null=True)
 
 class Address(models.Model):

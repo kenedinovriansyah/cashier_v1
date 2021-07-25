@@ -1,4 +1,4 @@
-from cashier_user.views.user import UserModelViewSets, UpdateUserAPIView,AccountsMeAPIView, UpdateEmployeAPIView
+from cashier_user.views.user import UserModelViewSets, UpdateUserAPIView,AccountsMeAPIView, UpdateEmployeAPIView, DestroyEmployeManyToMany
 from django.urls import path, include
 from rest_framework import routers
 
@@ -9,5 +9,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('updated/accounts/', UpdateUserAPIView.as_view(), name='updated-accounts'),
     path('updated/accounts/employe/<pk>/', UpdateEmployeAPIView.as_view(),name="updated-employe"),
-    path('accounts/me/', AccountsMeAPIView.as_view(), name='me')
+    path('accounts/me/', AccountsMeAPIView.as_view(), name='me'),
+    path('acounts/destroy/employe/<objects>', DestroyEmployeManyToMany.as_view() ,name="destroy-employe")
 ]

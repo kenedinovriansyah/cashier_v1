@@ -2,6 +2,7 @@ from database.models.accounts import choice
 from faker import Faker
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.core.files import File
 from django.urls import reverse
 import unittest
 import logging
@@ -153,6 +154,7 @@ class Usertests(unittest.TestCase):
         urls = reverse('updated-accounts')
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
         data = {
+            'avatar':  File(open("IMG_0083.PNG", "rb")),
             'username': faker.user_name(),
             'email': faker.email(),
             'first_name': faker.first_name(),
@@ -184,29 +186,30 @@ class Usertests(unittest.TestCase):
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
         urls = reverse('user-detail', args=[get.accounts_set.first().public_id])
         response = self.e.delete(urls,format='json')
-        self.assertEqual(response.data['message'], 'Accounts has been deleted')
+        self.assertEqual(response.data['message'], 'Employe has been deleted')
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.logger.info("destroy accounts")
 
     @unittest.skipIf(not tokens, "tokens is expires")
     def test_user_updated_employe(self):
         user = tokens.get('user').accounts_set.first().employe.all().first()
-        urls = reverse('updated-employe',args=[user.accounts_set.first().public_id])
-        self.e.credentials(HTTP_AUTHORIZATION="Bearer " +readme)
-        data = {
-            'username': faker.user_name(),
-            'email': faker.email(),
-            'first_name': faker.first_name(),
-            'last_name': faker.last_name(),
-            'gender': choice.male,
-            'country': faker.country(),
-            'state': faker.state(),
-            'address': faker.address(),
-            'postal_code': faker.postcode(),
-            "phone": faker.phone_number(),
-            'phone_fax': faker.phone_number(),
-        }
-        response = self.e.post(urls,data,format='multipart')
-        self.assertEqual(response.data['message'], 'Accounts has been updated')
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
-        self.logger.info('updated employe')
+        if  user:
+            urls = reverse('updated-employe',args=[user.accounts_set.first().public_id])
+            self.e.credentials(HTTP_AUTHORIZATION="Bearer " +readme)
+            data = {
+                'username': faker.user_name(),
+                'email': faker.email(),
+                'first_name': faker.first_name(),
+                'last_name': faker.last_name(),
+                'gender': choice.male,
+                'country': faker.country(),
+                'state': faker.state(),
+                'address': faker.address(),
+                'postal_code': faker.postcode(),
+                "phone": faker.phone_number(),
+                'phone_fax': faker.phone_number(),
+            }
+            response = self.e.post(urls,data,format='multipart')
+            self.assertEqual(response.data['message'], 'Accounts has been updated')
+            self.assertEqual(response.status_code,status.HTTP_200_OK)
+            self.logger.info('updated employe')

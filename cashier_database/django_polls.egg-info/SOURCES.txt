@@ -16,6 +16,7 @@ database/migrations/0001_initial.py
 database/migrations/0002_auto_20210722_1503.py
 database/migrations/0003_accounts_employe.py
 database/migrations/0004_alter_phone_phone_fax.py
+database/migrations/0005_alter_phone_phone_numbers.py
 database/migrations/__init__.py
 database/models/__init__.py
 database/models/accounts.py

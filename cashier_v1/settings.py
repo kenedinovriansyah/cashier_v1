@@ -1,9 +1,12 @@
+import sys
 import json
 import datetime
 from django.conf import settings
 from pathlib import Path
 import os
 import dotenv
+
+TEST = sys.argv[1] == 'test'
 
 dotenv.load_dotenv()
 
@@ -137,7 +140,7 @@ STATIC_ROOT = (
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = (
-    os.path.join(BASE_DIR, "media"),
+    os.path.join(BASE_DIR, "media")
 )
 
 # Default primary key field type
