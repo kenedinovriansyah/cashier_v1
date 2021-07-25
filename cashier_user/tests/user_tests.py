@@ -1,5 +1,4 @@
 from database.models.accounts import choice
-import json
 from faker import Faker
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -183,7 +182,7 @@ class Usertests(unittest.TestCase):
     def test_user_destroy(self):
         get = tokens.get('user').accounts_set.first().employe.first()
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
-        urls = reverse('user-detail', args=[get.first_name])
+        urls = reverse('user-detail', args=[get.accounts_set.first().public_id])
         response = self.e.delete(urls,format='json')
         self.assertEqual(response.data['message'], 'Accounts has been deleted')
         self.assertEqual(response.status_code,status.HTTP_200_OK)
@@ -192,7 +191,7 @@ class Usertests(unittest.TestCase):
     @unittest.skipIf(not tokens, "tokens is expires")
     def test_user_updated_employe(self):
         user = tokens.get('user').accounts_set.first().employe.all().first()
-        urls = reverse('updated-employe',args=[user.first_name])
+        urls = reverse('updated-employe',args=[user.accounts_set.first().public_id])
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " +readme)
         data = {
             'username': faker.user_name(),

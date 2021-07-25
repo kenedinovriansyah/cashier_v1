@@ -35,7 +35,7 @@ class UserModelViewSets(ModelViewSet):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
-        check = request.user.accounts_set.first().employe.filter(first_name=pk)
+        check = request.user.accounts_set.first().employe.filter(accounts__public_id=pk)
         if not check.exists():
             return Response({
                 'message': _("Accounts not found")
@@ -51,7 +51,7 @@ class UpdateEmployeAPIView(APIView):
     fields_serializer = UserSerializers
 
     def post(self, request, pk):
-        filter = self.queryset.filter(first_name=pk).first()
+        filter = self.queryset.filter(accounts__public_id=pk).first()
         check = request.user.accounts_set.first().employe.filter(first_name=filter.first_name)
         if not check.exists():
             return Response({
