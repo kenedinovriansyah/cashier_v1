@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from database.models.accounts import choice
 
+
 class BaseUserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=225, required=False)
     email = serializers.CharField(max_length=225, required=False)
@@ -14,12 +15,14 @@ class BaseUserSerializer(serializers.Serializer):
     class Meta:
         abstract = True
 
+
 class BaseAccountsSerializer(serializers.Serializer):
     avatar = serializers.ImageField(required=False)
-    gender = serializers.IntegerField(required=False,default=choice.male)
+    gender = serializers.IntegerField(required=False, default=choice.male)
 
     class Meta:
         abstract = True
+
 
 class BaseAddressSerializer(serializers.Serializer):
     country = serializers.CharField(max_length=225, required=False)
@@ -31,9 +34,11 @@ class BaseAddressSerializer(serializers.Serializer):
     class Meta:
         abstract = True
 
+
 class BasePhoneSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=225,required=False)
-    phone_fax = serializers.CharField(max_length=225,required=False)
+    phone = serializers.CharField(max_length=225, required=False)
+    phone_fax = serializers.CharField(max_length=225, required=False)
+
 
 class BaseTypeSerializer(serializers.Serializer):
     type = serializers.IntegerField(default=choice.member, required=False)
@@ -41,6 +46,13 @@ class BaseTypeSerializer(serializers.Serializer):
     class Meta:
         asbtract = True
 
-class Base(BaseUserSerializer, BasePhoneSerializer, BaseAddressSerializer, BaseTypeSerializer, BaseAccountsSerializer):
+
+class Base(
+    BaseUserSerializer,
+    BasePhoneSerializer,
+    BaseAddressSerializer,
+    BaseTypeSerializer,
+    BaseAccountsSerializer,
+):
     class Meta:
         abstract = True
