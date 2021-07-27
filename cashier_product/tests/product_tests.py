@@ -21,6 +21,24 @@ class Producttests(unittest.TestCase):
         self.logger.critical("category tests")
 
     @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_category_get_all(self):
+        urls = reverse('category-list')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.get(urls,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('get all category : %s' % response.data[0:1])
+
+    @unittest.skipIf(Category.objects.count() == 0, 'category not have data')
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_category_get_detail(self):
+        category = Category.objects.first()
+        urls = reverse('category-detail', args=[category.id])
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.get(urls,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('get detail category')
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
     def test_category_create(self):
         urls = reverse('category-list')
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
@@ -60,6 +78,25 @@ class Producttests(unittest.TestCase):
 
     def test_product(self):
         self.logger.critical('product tests')
+
+    @unittest.skipIf(Product.objects.count() == 0, 'category not have data')
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_product_get_all(self):
+        urls = reverse('product-list')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.get(urls,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('get all product : %s' % response.data[0:1])
+
+    @unittest.skipIf(Product.objects.count() == 0, 'category not have data')
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_product_get_detail(self):
+        product = Product.objects.first()
+        urls = reverse('product-detail', args=[product.id])
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.get(urls,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('get detail product')
 
     @unittest.skipIf(Category.objects.count() == 0, 'category not have data')
     @unittest.skipIf(not tokens, 'tokens is expires')
