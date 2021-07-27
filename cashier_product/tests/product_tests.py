@@ -1,5 +1,7 @@
 import unittest
+import random
 from database.models.category import Category
+from database.models.product import Product
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.core.files import File
@@ -55,4 +57,71 @@ class Producttests(unittest.TestCase):
         self.assertEqual(response.data['message'], 'Category has been updated')
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.logger.info('category has been updated')
-    
+
+    def test_product(self):
+        self.logger.critical('product tests')
+
+    @unittest.skipIf(Category.objects.count() == 0, 'category not have data')
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    def test_product_create(self):
+        category = Category.objects.first()
+        urls = reverse('product-list')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        description = ''
+        for i in faker.paragraphs():
+            description += i
+        data = {
+            'name': faker.name(),
+            'description': description,
+            'category': category.id,
+            'author': tokens.get('user').accounts_set.first().id,
+            'stock': random.randint(10,20),
+            'max_stock': random.randint(30,40),
+            'type': faker.name(),
+            'price': random.randint(10000,90000),
+            'sell': random.randint(20000,90000),
+            'icons': File(open('IMG_0083.PNG', 'rb'))
+        }
+        response = self.e.post(urls,data,format='multipart')
+        self.assertEqual(response.data['message'], 'Product has been created')
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        self.logger.info('product has been created')
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    @unittest.skipIf(Product.objects.count() == 0,'product not have data')
+    def test_product_destory(self):
+        product = Product.objects.first()
+        urls = reverse('product-detail', args=[product.public_id])
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.delete(urls,format='json')
+        self.assertEqual(response.data['message'], 'Product has been deleted')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('product has been deleted')
+
+    @unittest.skipIf(not tokens, 'tokens is expires')
+    @unittest.skipIf(Product.objects.count() == 0,'product not have data')
+    def test_product_update(self):
+        product = Product.objects.first()
+        urls = reverse('updated-product',args=[product.public_id])
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        description = ''
+        for i in faker.paragraphs():
+            description += i
+        data = {
+            'name': faker.name(),
+            'description': description,
+            'author': tokens.get('user').accounts_set.first().id,
+            'stock': random.randint(10,20),
+            'max_stock': random.randint(30,40),
+            'type': faker.name(),
+            'price': random.randint(10000,90000),
+            'sell': random.randint(20000,90000),
+            'icons': File(open('IMG_0083.PNG', 'rb')),
+            'typeId': product.type.all().first().id
+        }
+        response = self.e.post(urls,data,format='multipart')
+        self.assertEqual(response.data['message'], 'Product has been updated')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('product has been updated')
+
+

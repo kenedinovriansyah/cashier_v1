@@ -17,11 +17,15 @@ class ProductSerializer(Base):
     def create(self, validated_data):
         if self.context['types'] == 'create-category':
             return self.actions.c_c(validated_data)
+        elif self.context['types'] == 'create-product':
+            return self.actions.c_p(validated_data)
         pass
 
     def update(self, instance, validated_data):
         if self.context['types'] == 'updated-category':
             return self.actions.u_c(instance,validated_data)
+        elif self.context['types'] == 'updated-product':
+            return self.actions.u_p(instance,validated_data)
         pass
 
 

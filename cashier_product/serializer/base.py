@@ -1,5 +1,6 @@
 from database.models.accounts import Accounts
 from database.models.category import Category
+from database.models.product import TypeProduct
 from rest_framework import serializers
 
 class BaseCategory(serializers.Serializer):
@@ -18,6 +19,7 @@ class BaseStock(serializers.Serializer):
 
 class BaseTypeProduct(serializers.Serializer):
     type = serializers.CharField(max_length=225,required=False)
+    typeId = serializers.PrimaryKeyRelatedField(queryset=TypeProduct.objects.all(),required=False)
 
     class Meta:
         abstract = True
@@ -31,7 +33,8 @@ class BaseCurrency(serializers.Serializer):
 
 
 class BaseProduct(serializers.Serializer):
-    description = serializers.CharField(max_length=225,required=False)
+    icons = serializers.ImageField(required=False)
+    description = serializers.CharField(required=False)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(),required=False)
     author = serializers.PrimaryKeyRelatedField(queryset=Accounts.objects.all(),required=False)
 

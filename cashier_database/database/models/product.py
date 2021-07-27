@@ -19,6 +19,7 @@ class Currency(models.Model):
 
 class Product(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
+    icons = models.ImageField(upload_to="product/", null=True)
     name = models.CharField(max_length=225, null=False)
     description = models.TextField(null=False)
     type = models.ManyToManyField(TypeProduct, related_name='type_many_to_many')
