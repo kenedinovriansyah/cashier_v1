@@ -1,0 +1,22 @@
+{
+  "name": "beauty",
+  "version": "1.0.0",
+  "description": "python3 -m pip install cashier_database/dist/django-polls-0.1.tar.gz",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier --write '**/*.py'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenedinovriansyah/cashier_v1.git"
+  },
+  "author": "kenedi novriansyah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kenedinovriansyah/cashier_v1/issues"
+  },
+  "homepage": "https://github.com/kenedinovriansyah/cashier_v1#readme",
+  "devDependencies": {
+    "prettier": "^2.3.2"
+  }
+}

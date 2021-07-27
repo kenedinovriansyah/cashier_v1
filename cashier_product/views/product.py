@@ -13,6 +13,19 @@ class CategoryModelViewSets(ModelViewSet):
     serializer_class = CategoryModelSerializer
     fields_serializer = ProductSerializer
 
+    def get_permissions(self):
+        if self.action == 'list':
+            permission_classes = [permissions.AllowAny,]
+        else:
+            permission_classes = [permissions.IsAuthenticated,]
+        return [permission() for permission in permission_classes]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+
     def create(self, request):
         serializer = self.fields_serializer(data=request.data)
         serializer.context['types'] = 'create-category'
@@ -56,6 +69,18 @@ class ProductModelViewSets(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductModelSerializer
     fields_serializer = ProductSerializer
+
+    def get_permissions(self):
+        if self.action == 'list':
+            permission_classes = [permissions.AllowAny,]
+        else:
+            permission_classes = [permissions.IsAuthenticated,]
+        return [permission() for permission in permission_classes]
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
     def create(self, request):
         serializer = self.fields_serializer(data=request.data)
