@@ -9,6 +9,7 @@ class Category(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField()
     product = models.ManyToManyField(Product, related_name='product_many_to_many')
+    author = models.ForeignKey(Accounts, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()

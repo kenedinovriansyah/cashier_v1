@@ -112,6 +112,7 @@ class UpdateUserAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({
-                'message': message
+                'message': message,
+                'data': self.serializer_class(request.user).data
             },status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

@@ -3,6 +3,7 @@ import coloredlogs
 import logging
 import sys
 from cashier_user.tests.user_tests import Usertests
+from cashier_product.tests.product_tests import Producttests
 
 
 coloredlogs.install()
