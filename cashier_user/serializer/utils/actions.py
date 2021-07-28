@@ -71,11 +71,8 @@ class UserActions:
             accounts.gender = validated_data.get("gender")
             if validated_data.get("avatar"):
                 if accounts.avatar:
-                    try:
-                        splits = str(accounts.avatar).split("/")
-                        os.remove("rm media/accounts/%s" % splits[len(splits) - 1])
-                    except FileNotFoundError:
-                        pass
+                    splits = str(accounts.avatar).split("/")
+                    os.system("rm media/accounts/%s" % splits[len(splits) - 1])
                 accounts.avatar = validated_data.get("avatar")
             # Address
             accounts.address.country = validated_data.get("country")

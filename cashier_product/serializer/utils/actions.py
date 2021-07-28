@@ -49,6 +49,8 @@ class ActionsProduct:
         return instance
 
     def u_a_image(instance, validated_data):
+        if instance.image:
+            os.system('rm media/%s' % instance.image)
         instance.image = validated_data.get("image")
         instance.hex = validated_data.get("hex")
         instance.save()

@@ -77,7 +77,14 @@ class ProductModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = ["id", "category"]
+        exclude = ["id"]
+    
+    category = serializers.SerializerMethodField("get_category_display")
+
+    def get_category_display(self,context):
+        return {
+            'public_id': context.category.public_id
+        }
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):

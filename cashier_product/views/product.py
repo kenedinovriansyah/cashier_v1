@@ -1,3 +1,4 @@
+import os
 from cashier_product.utils.filter import CategoryFilterSet, ProductFilterSet
 from cashier_product.serializer.product import (
     CategoryModelSerializer,
@@ -136,6 +137,9 @@ class CategoryModelViewSets(ModelViewSet):
                 {"message": _("Category not found")}, status=status.HTTP_404_NOT_FOUND
             )
         if not settings.TEST:
+            for i in queryset.galery.all():
+                os.system("rm media/%s" % i.image)
+                i.delete()
             queryset.delete()
         return Response(
             {"message": _("Category has been deleted")}, status=status.HTTP_200_OK
