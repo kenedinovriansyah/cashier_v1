@@ -1,3 +1,4 @@
+from cashier_product.utils.filter import CategoryFilterSet, ProductFilterSet
 from cashier_product.serializer.product import (
     CategoryModelSerializer,
     ProductModelSerializer,
@@ -12,6 +13,7 @@ from database.models.product import Product
 from django.utils.translation import gettext as _
 from django.conf import settings
 from core.utils.pagination import StandardResultsSetPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CategoryListAPIView(generics.ListAPIView):
@@ -19,6 +21,8 @@ class CategoryListAPIView(generics.ListAPIView):
     serializer_class = CategoryModelSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.AllowAny,]
+    filter_backends = [DjangoFilterBackend,]
+    filterset_class = CategoryFilterSet
 
 
 class ProductListAPIView(generics.ListAPIView):
@@ -26,6 +30,8 @@ class ProductListAPIView(generics.ListAPIView):
     serializer_class = ProductModelSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.AllowAny,]
+    filter_backends = [DjangoFilterBackend,]
+    filterset_class = ProductFilterSet
 
 
 class CategoryModelViewSets(ModelViewSet):

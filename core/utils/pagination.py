@@ -3,7 +3,7 @@ from django.conf import settings
 
 
 class LargeResultsSetPagination(PageNumberPagination):
-    _ = 15
+    _ = 10
     if settings.TEST:
         _ = 1
     page_size = _
@@ -12,7 +12,7 @@ class LargeResultsSetPagination(PageNumberPagination):
 
 
 class StandardResultsSetPagination(PageNumberPagination):
-    _ = 15
+    _ = 10
     if settings.TEST:
         _ = 1
     page_size = _

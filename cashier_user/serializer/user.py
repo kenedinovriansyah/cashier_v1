@@ -93,7 +93,7 @@ class ChildAccountsModelSerializer(serializers.ModelSerializer):
     user = ChildUserModelSerializer(read_only=True)
     class Meta:
         model = Accounts
-        fields = ["user"]
+        fields = ["user", "avatar"]
 
 class AccountsModelSerializer(serializers.ModelSerializer):
     phone = PhoneModelSerializer(read_only=True)
