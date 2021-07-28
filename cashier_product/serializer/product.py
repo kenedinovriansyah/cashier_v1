@@ -28,10 +28,10 @@ class ProductSerializer(Base):
             return self.actions.u_c(instance, validated_data)
         elif self.context["types"] == "updated-product":
             return self.actions.u_p(instance, validated_data)
-        elif self.context['types'] == 'add-image-at-product':
-            return self.actions.p_a_image(instance,validated_data)
-        elif self.context['types'] == 'updated-image-at-product':
-            return self.actions.u_a_image(instance,validated_data)
+        elif self.context["types"] == "add-image-at-product":
+            return self.actions.p_a_image(instance, validated_data)
+        elif self.context["types"] == "updated-image-at-product":
+            return self.actions.u_a_image(instance, validated_data)
         pass
 
 
@@ -61,17 +61,19 @@ class CurrencyModelSerializer(serializers.ModelSerializer):
     def get_sell_currency_display(self, context):
         return format_currency(context.sell, "IDR", locale="id_ID")
 
+
 class ProductImageModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         exclude = ["id"]
+
 
 class ProductModelSerializer(serializers.ModelSerializer):
     stock = StockModelSerializer(read_only=True)
     currency = CurrencyModelSerializer(read_only=True)
     type = TypeProductModelSerializer(read_only=True, many=True)
     author = ChildAccountsModelSerializer(read_only=True)
-    galery = ProductImageModelSerializer(read_only=True,many=True)
+    galery = ProductImageModelSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product

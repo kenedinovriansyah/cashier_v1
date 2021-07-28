@@ -8,7 +8,7 @@ from cashier_product.views.product import (
     UpdateProductAPIView,
     ProductListAPIView,
     ProductGenericCreateAPIView,
-    UpdateProductImageCreateAPIView
+    UpdateProductImageCreateAPIView,
 )
 
 router = routers.DefaultRouter()
@@ -24,6 +24,14 @@ urlpatterns = [
     ),
     path("category/ext/all/", CategoryListAPIView.as_view(), name="all-category"),
     path("all/", ProductListAPIView.as_view(), name="all-product"),
-    path('add/image/to/product/<pk>/', ProductGenericCreateAPIView.as_view(), name="add-image-to-product"),
-    path('updated/image/to/product/<pk>/', UpdateProductImageCreateAPIView.as_view(), name="updated-image-to-product")
+    path(
+        "add/image/to/product/<pk>/",
+        ProductGenericCreateAPIView.as_view(),
+        name="add-image-to-product",
+    ),
+    path(
+        "updated/image/to/product/<pk>/",
+        UpdateProductImageCreateAPIView.as_view(),
+        name="updated-image-to-product",
+    ),
 ]

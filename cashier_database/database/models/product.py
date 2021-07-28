@@ -20,14 +20,16 @@ class Currency(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=12)
     sell = models.DecimalField(decimal_places=2, max_digits=12)
 
+
 class ProductImage(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
     image = models.ImageField(upload_to="product/", null=True)
-    hex = models.CharField(max_length=225,null=True)
+    hex = models.CharField(max_length=225, null=True)
+
 
 class Product(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
-    galery = models.ManyToManyField(ProductImage, related_name='image_many_to_many')
+    galery = models.ManyToManyField(ProductImage, related_name="image_many_to_many")
     name = models.CharField(max_length=225, null=False)
     description = models.TextField(null=False)
     type = models.ManyToManyField(TypeProduct, related_name="type_many_to_many")

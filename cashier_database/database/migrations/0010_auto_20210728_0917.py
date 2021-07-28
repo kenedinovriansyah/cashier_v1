@@ -6,30 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('database', '0009_auto_20210728_0856'),
+        ("database", "0009_auto_20210728_0856"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ProductImage',
+            name="ProductImage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('public_id', models.CharField(max_length=225, unique=True)),
-                ('image', models.ImageField(null=True, upload_to='product/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("public_id", models.CharField(max_length=225, unique=True)),
+                ("image", models.ImageField(null=True, upload_to="product/")),
             ],
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='icons',
+            model_name="product",
+            name="icons",
         ),
         migrations.AddField(
-            model_name='hex',
-            name='track_image',
+            model_name="hex",
+            name="track_image",
             field=models.CharField(max_length=225, null=True),
         ),
         migrations.AddField(
-            model_name='product',
-            name='image',
-            field=models.ManyToManyField(related_name='image_many_to_many', to='database.ProductImage'),
+            model_name="product",
+            name="image",
+            field=models.ManyToManyField(
+                related_name="image_many_to_many", to="database.ProductImage"
+            ),
         ),
     ]

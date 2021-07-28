@@ -38,19 +38,19 @@ class ActionsProduct:
         validated_data.get("category").product.add(create)
         return create
 
-    def p_a_image(instance,validated_data):
+    def p_a_image(instance, validated_data):
         image = ProductImage(
             public_id=str(uuid.uuid4()),
-            image=validated_data.get('image'),
-            hex=validated_data.get('hex')
+            image=validated_data.get("image"),
+            hex=validated_data.get("hex"),
         )
         image.save()
         instance.galery.add(image)
         return instance
 
-    def u_a_image(instance,validated_data):
-        instance.image = validated_data.get('image')
-        instance.hex = validated_data.get('hex')
+    def u_a_image(instance, validated_data):
+        instance.image = validated_data.get("image")
+        instance.hex = validated_data.get("hex")
         instance.save()
         return instance
 

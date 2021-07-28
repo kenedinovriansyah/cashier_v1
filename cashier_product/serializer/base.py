@@ -20,6 +20,7 @@ class BaseStock(serializers.Serializer):
     class Meta:
         abstract = True
 
+
 class BaseTypeProduct(serializers.Serializer):
     type = serializers.CharField(max_length=225, required=False)
     typeId = serializers.PrimaryKeyRelatedField(
@@ -37,9 +38,10 @@ class BaseCurrency(serializers.Serializer):
     class Meta:
         abstract = True
 
+
 class BaseProduct(serializers.Serializer):
     image = serializers.ImageField(required=False)
-    hex = serializers.CharField(max_length=225,required=False)
+    hex = serializers.CharField(max_length=225, required=False)
     description = serializers.CharField(required=False)
     category = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), required=False

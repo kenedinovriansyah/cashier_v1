@@ -18,7 +18,7 @@ class Producttests(unittest.TestCase):
     def setUp(self):
         self.e = APIClient()
         self.logger = logging.getLogger(__name__)
-        self.name = ''
+        self.name = ""
 
     def test_category(self):
         self.logger.critical("category tests")
@@ -108,7 +108,7 @@ class Producttests(unittest.TestCase):
         description = ""
         for i in faker.paragraphs():
             description += i
-    
+
         data = {
             "name": faker.name(),
             "description": description,
@@ -121,7 +121,7 @@ class Producttests(unittest.TestCase):
             "sell": random.randint(20000, 90000),
         }
         response = self.e.post(urls, data, format="multipart")
-        _dat['public_id'] = response.data['data'].get('public_id')
+        _dat["public_id"] = response.data["data"].get("public_id")
         self.assertEqual(response.data["message"], "Product has been created")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.logger.info("product has been created")
@@ -164,32 +164,25 @@ class Producttests(unittest.TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.logger.info("product has been updated")
 
-
     @unittest.skipIf(not tokens, "tokens is expires")
     @unittest.skipIf(Product.objects.count() == 0, "product not have data")
     def test_product_create_add_image(self):
-        urls = reverse('add-image-to-product', args=[_dat.get('public_id')])
+        urls = reverse("add-image-to-product", args=[_dat.get("public_id")])
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
-        data = {
-            'image': File(open("IMG_0083.PNG", "rb")),
-            'hex': faker.color()
-        }
-        response = self.e.post(urls,data,format='multipart')
-        self.assertEqual(response.data['message'], 'Image has been add to product')
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
-        self.logger.info('add image to product')
+        data = {"image": File(open("IMG_0083.PNG", "rb")), "hex": faker.color()}
+        response = self.e.post(urls, data, format="multipart")
+        self.assertEqual(response.data["message"], "Image has been add to product")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.logger.info("add image to product")
 
     @unittest.skipIf(not tokens, "tokens is expires")
     @unittest.skipIf(ProductImage.objects.count() == 0, "product not have data")
     def test_product_create_add_image(self):
         image = ProductImage.objects.first()
-        urls = reverse('updated-image-to-product', args=[image.public_id])
+        urls = reverse("updated-image-to-product", args=[image.public_id])
         self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
-        data = {
-            'image': File(open("IMG_0083.PNG", "rb")),
-            'hex': faker.color()
-        }
-        response = self.e.post(urls,data,format='multipart')
-        self.assertEqual(response.data['message'], 'Image has been updated')
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
-        self.logger.info('updated image to product')
+        data = {"image": File(open("IMG_0083.PNG", "rb")), "hex": faker.color()}
+        response = self.e.post(urls, data, format="multipart")
+        self.assertEqual(response.data["message"], "Image has been updated")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.logger.info("updated image to product")

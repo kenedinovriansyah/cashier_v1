@@ -16,6 +16,7 @@ from django.conf import settings
 from core.utils.pagination import StandardResultsSetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
+
 class ProductGenericCreateAPIView(generics.CreateAPIView):
     serializer_class = ProductModelSerializer
     fields_serializer = ProductSerializer
@@ -23,35 +24,46 @@ class ProductGenericCreateAPIView(generics.CreateAPIView):
     def post(self, request, pk):
         queryset = Product.objects.filter(public_id=pk).first()
         if not queryset:
-            return Response({
-                'message': _('Product not found')
-            },status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": _("Product not found")}, status=status.HTTP_404_NOT_FOUND
+            )
         serializer = self.fields_serializer(queryset, data=request.data)
-        serializer.context['types'] = 'add-image-at-product'
+        serializer.context["types"] = "add-image-at-product"
         if serializer.is_valid():
             serializer.save()
-            return Response({
-                'message': _('Image has been add to product'),
-                'data': self.serializer_class(Product.objects.filter(public_id=pk).first()).data
-            },status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "message": _("Image has been add to product"),
+                    "data": self.serializer_class(
+                        Product.objects.filter(public_id=pk).first()
+                    ).data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateProductImageCreateAPIView(generics.CreateAPIView):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageModelSerializer
     fields_serializer = ProductSerializer
 
-    def post(self, request,pk):
+    def post(self, request, pk):
         queryset = self.get_queryset().filter(public_id=pk).first()
-        serializer = self.fields_serializer(queryset,data=request.data)
-        serializer.context['types'] = 'updated-image-at-product'
+        serializer = self.fields_serializer(queryset, data=request.data)
+        serializer.context["types"] = "updated-image-at-product"
         if serializer.is_valid():
             serializer.save()
-            return Response({
-                'message': _('Image has been updated'),
-                'data': self.serializer_class(ProductImage.objects.filter(public_id=pk).first()).data
-            },status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "message": _("Image has been updated"),
+                    "data": self.serializer_class(
+                        ProductImage.objects.filter(public_id=pk).first()
+                    ).data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CategoryListAPIView(generics.ListAPIView):

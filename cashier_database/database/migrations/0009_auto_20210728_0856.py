@@ -6,17 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('database', '0008_auto_20210728_0836'),
+        ("database", "0008_auto_20210728_0836"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Color',
-            new_name='Hex',
+            old_name="Color",
+            new_name="Hex",
         ),
         migrations.RenameField(
-            model_name='hex',
-            old_name='hex',
-            new_name='color',
+            model_name="hex",
+            old_name="hex",
+            new_name="color",
         ),
     ]

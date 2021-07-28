@@ -6,21 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('database', '0007_product_icons'),
+        ("database", "0007_product_icons"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Color',
+            name="Color",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('public_id', models.CharField(max_length=225, unique=True)),
-                ('hex', models.CharField(max_length=225)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("public_id", models.CharField(max_length=225, unique=True)),
+                ("hex", models.CharField(max_length=225)),
             ],
         ),
         migrations.AddField(
-            model_name='product',
-            name='hex',
-            field=models.ManyToManyField(related_name='hex_many_to_many', to='database.Color'),
+            model_name="product",
+            name="hex",
+            field=models.ManyToManyField(
+                related_name="hex_many_to_many", to="database.Color"
+            ),
         ),
     ]

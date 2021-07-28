@@ -6,20 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('database', '0010_auto_20210728_0917'),
+        ("database", "0010_auto_20210728_0917"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='product',
-            name='hex',
+            model_name="product",
+            name="hex",
         ),
         migrations.AddField(
-            model_name='productimage',
-            name='hex',
+            model_name="productimage",
+            name="hex",
             field=models.CharField(max_length=225, null=True),
         ),
         migrations.DeleteModel(
-            name='Hex',
+            name="Hex",
         ),
     ]
