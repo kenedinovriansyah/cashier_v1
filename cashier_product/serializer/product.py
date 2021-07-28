@@ -3,6 +3,8 @@ from database.models.product import Product, Stock, TypeProduct, Currency
 from rest_framework import serializers
 from .base import Base
 from .utils.actions import ActionsProduct
+from babel.numbers import format_currency
+from cashier_user.serializer.user import ChildAccountsModelSerializer
 
 
 class ProductSerializer(Base):
@@ -32,29 +34,41 @@ class ProductSerializer(Base):
 class StockModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stock
-        fields = "__all__"
+        exclude = ["id"]
 
 
 class TypeProductModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = TypeProduct
-        fields = "__all__"
+        exclude = ["id"]
 
 
 class CurrencyModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
-        fields = "__all__"
+        exclude = ["id"]
+
+    price_currency = serializers.SerializerMethodField("get_price_currency_display")
+    sell_currency = serializers.SerializerMethodField('get_sell_currency_display')
+
+    def get_price_currency_display(self,context):
+        return format_currency(context.price,"IDR", locale="id_ID")
+    
+    def get_sell_currency_display(self,context):
+        return format_currency(context.sell, "IDR", locale="id_ID")
+
 
 
 class ProductModelSerializer(serializers.ModelSerializer):
     stock = StockModelSerializer(read_only=True)
     currency = CurrencyModelSerializer(read_only=True)
     type = TypeProductModelSerializer(read_only=True, many=True)
+    author = ChildAccountsModelSerializer(read_only=True)
 
     class Meta:
         model = Product
-        fields = "__all__"
+        exclude = ["id", "category"]
+
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):

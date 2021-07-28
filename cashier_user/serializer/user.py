@@ -48,19 +48,19 @@ class UserSerializers(Base):
 class AddressModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = "__all__"
+        exclude = ['id']
 
 
 class PhoneModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Phone
-        fields = "__all__"
+        exclude = ['id']
 
 
 class TypeModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
-        fields = "__all__"
+        exclude = ['id']
 
     name = serializers.SerializerMethodField("get_name_display")
 
@@ -71,19 +71,29 @@ class TypeModelSerializer(serializers.ModelSerializer):
 class AccountsEmployeModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accounts
-        fields = "__all__"
+        exclude = ["id"]
 
 
 class UserEmployeModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ["id"]
 
     accounts = serializers.SerializerMethodField("get_accounts_display")
 
     def get_accounts_display(self, context):
         return AccountsModelSerializer(context.accounts_set.first()).data
 
+class ChildUserModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name"]
+
+class ChildAccountsModelSerializer(serializers.ModelSerializer):
+    user = ChildUserModelSerializer(read_only=True)
+    class Meta:
+        model = Accounts
+        fields = ["user"]
 
 class AccountsModelSerializer(serializers.ModelSerializer):
     phone = PhoneModelSerializer(read_only=True)
@@ -93,7 +103,7 @@ class AccountsModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Accounts
-        fields = "__all__"
+        exclude = ['id']
 
     name_gender = serializers.SerializerMethodField("get_gender_display")
 
