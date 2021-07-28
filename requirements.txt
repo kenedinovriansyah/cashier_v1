@@ -15,6 +15,7 @@ djangorestframework==3.12.4
 djangorestframework-jwt==1.11.0
 Faker==8.10.1
 greenlet==1.1.0
+django-crispy-forms==1.12.0
 humanfriendly==9.2
 jedi==0.18.0
 Markdown==3.3.4

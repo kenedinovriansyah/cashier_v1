@@ -19,6 +19,8 @@ database/migrations/0004_alter_phone_phone_fax.py
 database/migrations/0005_alter_phone_phone_numbers.py
 database/migrations/0006_category_author.py
 database/migrations/0007_product_icons.py
+database/migrations/0008_auto_20210728_0836.py
+database/migrations/0009_auto_20210728_0856.py
 database/migrations/__init__.py
 database/models/__init__.py
 database/models/accounts.py

@@ -1,5 +1,5 @@
 from database.models.category import Category
-from database.models.product import Product, Stock, TypeProduct, Currency
+from database.models.product import Product, Stock, TypeProduct, Currency, Hex
 from rest_framework import serializers
 from .base import Base
 from .utils.actions import ActionsProduct
@@ -49,26 +49,29 @@ class CurrencyModelSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
     price_currency = serializers.SerializerMethodField("get_price_currency_display")
-    sell_currency = serializers.SerializerMethodField('get_sell_currency_display')
+    sell_currency = serializers.SerializerMethodField("get_sell_currency_display")
 
-    def get_price_currency_display(self,context):
-        return format_currency(context.price,"IDR", locale="id_ID")
-    
-    def get_sell_currency_display(self,context):
+    def get_price_currency_display(self, context):
+        return format_currency(context.price, "IDR", locale="id_ID")
+
+    def get_sell_currency_display(self, context):
         return format_currency(context.sell, "IDR", locale="id_ID")
 
-
+class HexModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hex
+        exclude = ["id"]
 
 class ProductModelSerializer(serializers.ModelSerializer):
     stock = StockModelSerializer(read_only=True)
     currency = CurrencyModelSerializer(read_only=True)
     type = TypeProductModelSerializer(read_only=True, many=True)
     author = ChildAccountsModelSerializer(read_only=True)
+    hex = HexModelSerializer(read_only=True,many=True)
 
     class Meta:
         model = Product
         exclude = ["id", "category"]
-
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):

@@ -14,6 +14,10 @@ class TypeProduct(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
     type = models.CharField(max_length=225, null=False)
 
+class Hex(models.Model):
+    public_id = models.CharField(max_length=225, null=False, unique=True)
+    color = models.CharField(max_length=225, null=False)
+
 
 class Currency(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
@@ -30,6 +34,7 @@ class Product(models.Model):
     category = models.ForeignKey("Category", on_delete=models.CASCADE, related_name="+")
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    hex = models.ManyToManyField(Hex, related_name='hex_many_to_many')
     author = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     create_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField()

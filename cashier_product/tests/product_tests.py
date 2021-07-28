@@ -106,6 +106,11 @@ class Producttests(unittest.TestCase):
         description = ""
         for i in faker.paragraphs():
             description += i
+        _ = []
+        for i in range(1,5):
+            _dict = {}
+            _dict['child'] = faker.color()
+            _.append(_dict)
         data = {
             "name": faker.name(),
             "description": description,
@@ -114,6 +119,7 @@ class Producttests(unittest.TestCase):
             "stock": random.randint(10, 20),
             "max_stock": random.randint(30, 40),
             "type": faker.name(),
+            'hex': _,
             "price": random.randint(10000, 90000),
             "sell": random.randint(20000, 90000),
             "icons": File(open("IMG_0083.PNG", "rb")),
@@ -156,6 +162,7 @@ class Producttests(unittest.TestCase):
             "typeId": product.type.all().first().id,
         }
         response = self.e.post(urls, data, format="multipart")
+        print(response.data)
         self.assertEqual(response.data["message"], "Product has been updated")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.logger.info("product has been updated")

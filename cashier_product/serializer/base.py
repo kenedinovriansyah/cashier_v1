@@ -19,6 +19,14 @@ class BaseStock(serializers.Serializer):
     class Meta:
         abstract = True
 
+class BaseListField(serializers.ListField):
+    child = serializers.CharField(max_length=225,required=False)
+
+class BaseColor(serializers.Serializer):
+    hex = BaseListField(required=False)
+
+    class Meta:
+        abstract = True
 
 class BaseTypeProduct(serializers.Serializer):
     type = serializers.CharField(max_length=225, required=False)
@@ -52,6 +60,6 @@ class BaseProduct(serializers.Serializer):
         abstract = True
 
 
-class Base(BaseCategory, BaseStock, BaseTypeProduct, BaseCurrency, BaseProduct):
+class Base(BaseCategory, BaseStock, BaseTypeProduct, BaseCurrency, BaseProduct, BaseColor):
     class Meta:
         abstract = True

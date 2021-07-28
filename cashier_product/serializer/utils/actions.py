@@ -1,6 +1,7 @@
+import ast
 from rest_framework import serializers
 from database.models.category import Category
-from database.models.product import Product, TypeProduct, Stock, Currency
+from database.models.product import Product, TypeProduct, Stock, Currency, Hex
 import uuid
 import os
 
@@ -35,6 +36,14 @@ class ActionsProduct:
             author=validated_data.get("author"),
         )
         create.save()
+        for i in validated_data.get('hex'):
+            _d = ast.literal_eval(i)
+            color = Hex(
+                public_id=str(uuid.uuid4()),
+                color=_d.get('child')
+            )
+            color.save()
+            create.hex.add(color)
         create.type.add(type)
         validated_data.get("category").product.add(create)
         return create
