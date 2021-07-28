@@ -18,12 +18,14 @@ class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryModelSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.AllowAny,]
 
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductModelSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.AllowAny,]
 
 
 class CategoryModelViewSets(ModelViewSet):
