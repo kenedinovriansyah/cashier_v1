@@ -1,7 +1,6 @@
 import ast
-from rest_framework import serializers
 from database.models.category import Category
-from database.models.product import Product, TypeProduct, Stock, Currency, Hex
+from database.models.product import Product, TypeProduct, Stock, Currency, ProductImage
 import uuid
 import os
 
@@ -29,24 +28,31 @@ class ActionsProduct:
             public_id=str(uuid.uuid4()),
             name=validated_data.get("name"),
             description=validated_data.get("description"),
-            icons=validated_data.get("icons"),
             category=validated_data.get("category"),
             stock=stock,
             currency=currency,
             author=validated_data.get("author"),
         )
         create.save()
-        for i in validated_data.get('hex'):
-            _d = ast.literal_eval(i)
-            color = Hex(
-                public_id=str(uuid.uuid4()),
-                color=_d.get('child')
-            )
-            color.save()
-            create.hex.add(color)
         create.type.add(type)
         validated_data.get("category").product.add(create)
         return create
+
+    def p_a_image(instance,validated_data):
+        image = ProductImage(
+            public_id=str(uuid.uuid4()),
+            image=validated_data.get('image'),
+            hex=validated_data.get('hex')
+        )
+        image.save()
+        instance.galery.add(image)
+        return instance
+
+    def u_a_image(instance,validated_data):
+        instance.image = validated_data.get('image')
+        instance.hex = validated_data.get('hex')
+        instance.save()
+        return instance
 
     def c_c(validated_data):
         create = Category(
@@ -60,14 +66,6 @@ class ActionsProduct:
     def u_p(instance, validated_data):
         instance.name = validated_data.get("name")
         instance.description = validated_data.get("description")
-        if validated_data.get("icons"):
-            if instance.icons:
-                try:
-                    splits = str(instance.icons).split("/")
-                    os.remove("rm -rf media/product/%s" % splits[len(splits) - 1])
-                except FileNotFoundError:
-                    pass
-            instance.icons = validated_data.get("icons")
         instance.stock.stock = validated_data.get("stock")
         instance.stock.max_stock = validated_data.get("max_stock")
         instance.stock.save()

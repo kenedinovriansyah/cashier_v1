@@ -1,3 +1,4 @@
+from database.models.product import ProductImage
 from database.models.accounts import Accounts
 from database.models.category import Category
 from database.models.product import TypeProduct
@@ -19,15 +20,6 @@ class BaseStock(serializers.Serializer):
     class Meta:
         abstract = True
 
-class BaseListField(serializers.ListField):
-    child = serializers.CharField(max_length=225,required=False)
-
-class BaseColor(serializers.Serializer):
-    hex = BaseListField(required=False)
-
-    class Meta:
-        abstract = True
-
 class BaseTypeProduct(serializers.Serializer):
     type = serializers.CharField(max_length=225, required=False)
     typeId = serializers.PrimaryKeyRelatedField(
@@ -45,9 +37,9 @@ class BaseCurrency(serializers.Serializer):
     class Meta:
         abstract = True
 
-
 class BaseProduct(serializers.Serializer):
-    icons = serializers.ImageField(required=False)
+    image = serializers.ImageField(required=False)
+    hex = serializers.CharField(max_length=225,required=False)
     description = serializers.CharField(required=False)
     category = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), required=False
@@ -60,6 +52,6 @@ class BaseProduct(serializers.Serializer):
         abstract = True
 
 
-class Base(BaseCategory, BaseStock, BaseTypeProduct, BaseCurrency, BaseProduct, BaseColor):
+class Base(BaseCategory, BaseStock, BaseTypeProduct, BaseCurrency, BaseProduct):
     class Meta:
         abstract = True

@@ -1,5 +1,5 @@
 from database.models.category import Category
-from database.models.product import Product, Stock, TypeProduct, Currency, Hex
+from database.models.product import Product, Stock, TypeProduct, Currency, ProductImage
 from rest_framework import serializers
 from .base import Base
 from .utils.actions import ActionsProduct
@@ -28,6 +28,10 @@ class ProductSerializer(Base):
             return self.actions.u_c(instance, validated_data)
         elif self.context["types"] == "updated-product":
             return self.actions.u_p(instance, validated_data)
+        elif self.context['types'] == 'add-image-at-product':
+            return self.actions.p_a_image(instance,validated_data)
+        elif self.context['types'] == 'updated-image-at-product':
+            return self.actions.u_a_image(instance,validated_data)
         pass
 
 
@@ -57,9 +61,9 @@ class CurrencyModelSerializer(serializers.ModelSerializer):
     def get_sell_currency_display(self, context):
         return format_currency(context.sell, "IDR", locale="id_ID")
 
-class HexModelSerializer(serializers.ModelSerializer):
+class ProductImageModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Hex
+        model = ProductImage
         exclude = ["id"]
 
 class ProductModelSerializer(serializers.ModelSerializer):
@@ -67,7 +71,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
     currency = CurrencyModelSerializer(read_only=True)
     type = TypeProductModelSerializer(read_only=True, many=True)
     author = ChildAccountsModelSerializer(read_only=True)
-    hex = HexModelSerializer(read_only=True,many=True)
+    galery = ProductImageModelSerializer(read_only=True,many=True)
 
     class Meta:
         model = Product

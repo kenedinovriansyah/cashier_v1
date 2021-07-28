@@ -14,27 +14,26 @@ class TypeProduct(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
     type = models.CharField(max_length=225, null=False)
 
-class Hex(models.Model):
-    public_id = models.CharField(max_length=225, null=False, unique=True)
-    color = models.CharField(max_length=225, null=False)
-
 
 class Currency(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
     price = models.DecimalField(decimal_places=2, max_digits=12)
     sell = models.DecimalField(decimal_places=2, max_digits=12)
 
+class ProductImage(models.Model):
+    public_id = models.CharField(max_length=225, null=False, unique=True)
+    image = models.ImageField(upload_to="product/", null=True)
+    hex = models.CharField(max_length=225,null=True)
 
 class Product(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
-    icons = models.ImageField(upload_to="product/", null=True)
+    galery = models.ManyToManyField(ProductImage, related_name='image_many_to_many')
     name = models.CharField(max_length=225, null=False)
     description = models.TextField(null=False)
     type = models.ManyToManyField(TypeProduct, related_name="type_many_to_many")
     category = models.ForeignKey("Category", on_delete=models.CASCADE, related_name="+")
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
-    hex = models.ManyToManyField(Hex, related_name='hex_many_to_many')
     author = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     create_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField()
