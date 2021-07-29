@@ -59,7 +59,7 @@ class CurrencyModelSerializer(serializers.ModelSerializer):
         return format_currency(context.price, "IDR", locale="id_ID")
 
     def get_sell_currency_display(self, context):
-        return format_currency(context.sell, "IDR", locale="id_ID")
+        return format_currency(context.sales_price, "IDR", locale="id_ID")
 
 
 class ProductImageModelSerializer(serializers.ModelSerializer):

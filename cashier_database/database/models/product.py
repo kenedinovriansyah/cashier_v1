@@ -18,12 +18,12 @@ class TypeProduct(models.Model):
 class Currency(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
     price = models.DecimalField(decimal_places=2, max_digits=12)
-    sell = models.DecimalField(decimal_places=2, max_digits=12)
+    sales_price = models.DecimalField(decimal_places=2, max_digits=12)
 
 
 class ProductImage(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
-    image = models.ImageField(upload_to="product/", null=True)
+    picture = models.ImageField(upload_to="product/", null=True)
     hex = models.CharField(max_length=225, null=True)
 
 
@@ -31,7 +31,8 @@ class Product(models.Model):
     public_id = models.CharField(max_length=225, null=False, unique=True)
     galery = models.ManyToManyField(ProductImage, related_name="image_many_to_many")
     name = models.CharField(max_length=225, null=False)
-    description = models.TextField(null=False)
+    desc = models.TextField(null=False)
+    quantity = models.IntegerField(default=1)
     type = models.ManyToManyField(TypeProduct, related_name="type_many_to_many")
     category = models.ForeignKey("Category", on_delete=models.CASCADE, related_name="+")
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)

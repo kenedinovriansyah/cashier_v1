@@ -21,13 +21,13 @@ class ActionsProduct:
         currency = Currency(
             public_id=str(uuid.uuid4()),
             price=validated_data.get("price"),
-            sell=validated_data.get("sell"),
+            sales_price=validated_data.get("sell"),
         )
         currency.save()
         create = Product(
             public_id=str(uuid.uuid4()),
             name=validated_data.get("name"),
-            description=validated_data.get("description"),
+            desc=validated_data.get("description"),
             category=validated_data.get("category"),
             stock=stock,
             currency=currency,
@@ -41,7 +41,7 @@ class ActionsProduct:
     def p_a_image(instance, validated_data):
         image = ProductImage(
             public_id=str(uuid.uuid4()),
-            image=validated_data.get("image"),
+            picture=validated_data.get("image"),
             hex=validated_data.get("hex"),
         )
         image.save()
@@ -49,9 +49,9 @@ class ActionsProduct:
         return instance
 
     def u_a_image(instance, validated_data):
-        if instance.image:
-            os.system('rm media/%s' % instance.image)
-        instance.image = validated_data.get("image")
+        if instance.picture:
+            os.system('rm media/%s' % instance.picture)
+        instance.picture = validated_data.get("image")
         instance.hex = validated_data.get("hex")
         instance.save()
         return instance
