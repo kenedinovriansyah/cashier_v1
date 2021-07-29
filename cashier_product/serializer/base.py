@@ -46,6 +46,7 @@ class BaseProduct(serializers.Serializer):
     category = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), required=False
     )
+    sku = serializers.CharField(required=False)
     author = serializers.PrimaryKeyRelatedField(
         queryset=Accounts.objects.all(), required=False
     )

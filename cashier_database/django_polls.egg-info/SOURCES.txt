@@ -25,6 +25,7 @@ database/migrations/0010_auto_20210728_0917.py
 database/migrations/0011_auto_20210728_0939.py
 database/migrations/0012_rename_image_product_galery.py
 database/migrations/0013_auto_20210729_1038.py
+database/migrations/0014_auto_20210729_1045.py
 database/migrations/__init__.py
 database/models/__init__.py
 database/models/accounts.py

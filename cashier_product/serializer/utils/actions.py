@@ -3,6 +3,7 @@ from database.models.category import Category
 from database.models.product import Product, TypeProduct, Stock, Currency, ProductImage
 import uuid
 import os
+from passlib.hash import oracle10
 
 
 class ActionsProduct:
@@ -31,6 +32,8 @@ class ActionsProduct:
             category=validated_data.get("category"),
             stock=stock,
             currency=currency,
+            sku=validated_data.get('sku'),
+            code=oracle10.hash(validated_data.get('name'),validated_data.get('author').public_id),
             author=validated_data.get("author"),
         )
         create.save()

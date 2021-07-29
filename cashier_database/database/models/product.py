@@ -33,6 +33,8 @@ class Product(models.Model):
     name = models.CharField(max_length=225, null=False)
     desc = models.TextField(null=False)
     quantity = models.IntegerField(default=1)
+    code = models.CharField(max_length=225, null=True, unique=True)
+    sku = models.CharField(max_length=225, null=True)
     type = models.ManyToManyField(TypeProduct, related_name="type_many_to_many")
     category = models.ForeignKey("Category", on_delete=models.CASCADE, related_name="+")
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
