@@ -1,5 +1,5 @@
 from django.urls import path, include
-from cashier_product.views.product import (
+from cashier_product.views.category import (
     SubCategoryGenericUpdateorDestroy,
     CategoryListAPIView,
     CategoryModelViewSets,

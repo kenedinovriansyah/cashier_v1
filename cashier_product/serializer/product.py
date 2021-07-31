@@ -87,17 +87,3 @@ class ProductModelSerializer(serializers.ModelSerializer):
 
     def get_category_display(self, context):
         return {"public_id": context.sub.public_id}
-
-
-class SubCategoryModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCategory
-        fields = "__all__"
-
-
-class CategoryModelSerializer(serializers.ModelSerializer):
-    sub = SubCategoryModelSerializer(read_only=True, many=True)
-    
-    class Meta:
-        model = Category
-        fields = "__all__"
