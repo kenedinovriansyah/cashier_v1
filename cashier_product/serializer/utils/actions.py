@@ -1,4 +1,5 @@
 import ast
+from database.models.category import SubCategory
 from database.models.category import Category
 from database.models.product import Product, TypeProduct, Stock, Currency, ProductImage
 import uuid
@@ -9,6 +10,19 @@ from passlib.hash import oracle10
 class ActionsProduct:
     def get_fields(context, fields):
         pass
+
+    def c_s(validated_data):
+        create = SubCategory(
+            public_id=str(uuid.uuid4()), name=validated_data.get("name")
+        )
+        create.save()
+        validated_data.get("category").sub.add(create)
+        return create
+
+    def u_s(instance, validated_data):
+        instance.name = validated_data.get("name")
+        instance.save()
+        return instance
 
     def c_p(validated_data):
         stock = Stock(
@@ -29,16 +43,18 @@ class ActionsProduct:
             public_id=str(uuid.uuid4()),
             name=validated_data.get("name"),
             desc=validated_data.get("description"),
-            category=validated_data.get("category"),
+            sub=validated_data.get("sub"),
             stock=stock,
             currency=currency,
-            sku=validated_data.get('sku'),
-            code=oracle10.hash(validated_data.get('name'),validated_data.get('author').public_id),
+            sku=validated_data.get("sku"),
+            code=oracle10.hash(
+                validated_data.get("name"), validated_data.get("author").public_id
+            ),
             author=validated_data.get("author"),
         )
         create.save()
         create.type.add(type)
-        validated_data.get("category").product.add(create)
+        validated_data.get("sub").product.add(create)
         return create
 
     def p_a_image(instance, validated_data):
@@ -53,7 +69,7 @@ class ActionsProduct:
 
     def u_a_image(instance, validated_data):
         if instance.picture:
-            os.system('rm media/%s' % instance.picture)
+            os.system("rm media/%s" % instance.picture)
         instance.picture = validated_data.get("image")
         instance.hex = validated_data.get("hex")
         instance.save()

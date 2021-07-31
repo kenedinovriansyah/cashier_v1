@@ -1,4 +1,4 @@
-from database.models.product import ProductImage
+from database.models.category import SubCategory
 from database.models.accounts import Accounts
 from database.models.category import Category
 from database.models.product import TypeProduct
@@ -7,6 +7,9 @@ from rest_framework import serializers
 
 class BaseCategory(serializers.Serializer):
     name = serializers.CharField(max_length=225, required=False)
+    sub = serializers.PrimaryKeyRelatedField(
+        queryset=SubCategory.objects.all(), required=False
+    )
 
     class Meta:
         abstract = True

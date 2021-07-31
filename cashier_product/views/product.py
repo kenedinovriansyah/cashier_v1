@@ -1,3 +1,4 @@
+from database.models.category import SubCategory
 import os
 from cashier_product.utils.filter import CategoryFilterSet, ProductFilterSet
 from cashier_product.serializer.product import (
@@ -5,8 +6,9 @@ from cashier_product.serializer.product import (
     ProductImageModelSerializer,
     ProductModelSerializer,
     ProductSerializer,
+    SubCategoryModelSerializer,
 )
-from rest_framework import status, permissions, generics
+from rest_framework import serializers, status, permissions, generics
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -16,6 +18,26 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 from core.utils.pagination import StandardResultsSetPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from passlib.hash import oracle10
+import random
+import string
+
+
+def random_string():
+    strings = string.ascii_letters
+    return "".join(random.choice(strings) for i in range(10, 20))
+
+
+class CodeProductCreateAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductModelSerializer
+    fields_serializer = ProductSerializer
+
+    def get(self, request):
+        code = oracle10.hash(
+            random_string(), request.user.accounts_set.first().public_id
+        )
+        return Response(code, status=status.HTTP_200_OK)
 
 
 class ProductGenericCreateAPIView(generics.CreateAPIView):
@@ -115,6 +137,8 @@ class CategoryModelViewSets(ModelViewSet):
     def create(self, request):
         serializer = self.fields_serializer(data=request.data)
         serializer.context["types"] = "create-category"
+        if request.data.get("types") == "sub-category":
+            serializer.context["types"] = "sub-category"
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -164,6 +188,45 @@ class CategoryModelViewSets(ModelViewSet):
                 },
                 status=status.HTTP_200_OK,
             )
+
+
+class SubCategoryGenericUpdateorDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategoryModelSerializer
+    fields_serializer = ProductSerializer
+
+    def destroy(self, request, pk):
+        queryset = self.get_queryset().filter(public_id=pk).first()
+        if not queryset:
+            return Response(
+                {"message": _("Category not found")}, status=status.HTTP_404_NOT_FOUND
+            )
+        if not settings.TEST:
+            queryset.delete()
+        return Response(
+            {"message": _("Category has been deleted")}, status=status.HTTP_200_OK
+        )
+
+    def update(self, request, pk):
+        queryset = self.get_queryset().filter(public_id=pk).first()
+        if not queryset:
+            return Response(
+                {"message": _("Category not found")}, status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = self.fields_serializer(queryset, data=request.data)
+        serializer.context["types"] = "sub-category-update"
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "message": _("Category has been updated"),
+                    "data": self.serializer_class(
+                        SubCategory.objects.filter(public_id=pk).first()
+                    ).data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProductModelViewSets(ModelViewSet):

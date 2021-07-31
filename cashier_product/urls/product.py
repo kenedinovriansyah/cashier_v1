@@ -2,17 +2,15 @@ from os import name
 from django.urls import path, include
 from rest_framework import routers
 from cashier_product.views.product import (
-    CategoryModelViewSets,
-    CategoryListAPIView,
     ProductModelViewSets,
     UpdateProductAPIView,
     ProductListAPIView,
     ProductGenericCreateAPIView,
     UpdateProductImageCreateAPIView,
+    CodeProductCreateAPIView,
 )
 
 router = routers.DefaultRouter()
-router.register("category", CategoryModelViewSets, basename="category")
 router.register("product", ProductModelViewSets, basename="product")
 
 urlpatterns = [
@@ -22,7 +20,6 @@ urlpatterns = [
         UpdateProductAPIView.as_view(),
         name="updated-product",
     ),
-    path("category/ext/all/", CategoryListAPIView.as_view(), name="all-category"),
     path("all/", ProductListAPIView.as_view(), name="all-product"),
     path(
         "add/image/to/product/<pk>/",
@@ -34,4 +31,5 @@ urlpatterns = [
         UpdateProductImageCreateAPIView.as_view(),
         name="updated-image-to-product",
     ),
+    path("code/", CodeProductCreateAPIView.as_view(), name="create-product-code"),
 ]

@@ -1,4 +1,4 @@
-from database.models.category import Category
+from database.models.category import Category, SubCategory
 from database.models.product import Product, Stock, TypeProduct, Currency, ProductImage
 from rest_framework import serializers
 from .base import Base
@@ -19,6 +19,8 @@ class ProductSerializer(Base):
     def create(self, validated_data):
         if self.context["types"] == "create-category":
             return self.actions.c_c(validated_data)
+        elif self.context["types"] == "sub-category":
+            return self.actions.c_s(validated_data)
         elif self.context["types"] == "create-product":
             return self.actions.c_p(validated_data)
         pass
@@ -26,6 +28,8 @@ class ProductSerializer(Base):
     def update(self, instance, validated_data):
         if self.context["types"] == "updated-category":
             return self.actions.u_c(instance, validated_data)
+        elif self.context["types"] == "sub-category-update":
+            return self.actions.u_s(instance, validated_data)
         elif self.context["types"] == "updated-product":
             return self.actions.u_p(instance, validated_data)
         elif self.context["types"] == "add-image-at-product":
@@ -78,18 +82,22 @@ class ProductModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = ["id"]
-    
+
     category = serializers.SerializerMethodField("get_category_display")
 
-    def get_category_display(self,context):
-        return {
-            'public_id': context.category.public_id
-        }
+    def get_category_display(self, context):
+        return {"public_id": context.sub.public_id}
+
+
+class SubCategoryModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = "__all__"
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
-    product = ProductModelSerializer(read_only=True, many=True)
-
+    sub = SubCategoryModelSerializer(read_only=True, many=True)
+    
     class Meta:
         model = Category
         fields = "__all__"
