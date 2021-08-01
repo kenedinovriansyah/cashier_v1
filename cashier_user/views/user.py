@@ -1,11 +1,12 @@
 from django.conf import settings
-from rest_framework import serializers, status, permissions
+from rest_framework import status, permissions, generics
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from cashier_user.serializer.user import UserSerializers, UserModelSerializer
 from django.utils.translation import gettext as _
+from core.utils.pagination import StandardResultsSetPagination
 
 
 class UserModelViewSets(ModelViewSet):
@@ -96,13 +97,22 @@ class UpdateEmployeAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AccountsMeAPIView(APIView):
+class AccountsMeGenericListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
 
     def get(self, request):
         serializer = self.serializer_class(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AccountsMeEmployeGenericlistAPIView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        return self.request.user.accounts_set.first().employe.all()
 
 
 class UpdateUserAPIView(APIView):

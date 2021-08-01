@@ -1,7 +1,8 @@
 from cashier_user.views.user import (
     UserModelViewSets,
     UpdateUserAPIView,
-    AccountsMeAPIView,
+    AccountsMeGenericListAPIView,
+    AccountsMeEmployeGenericlistAPIView,
     UpdateEmployeAPIView,
     DestroyEmployeManyToMany,
 )
@@ -19,7 +20,12 @@ urlpatterns = [
         UpdateEmployeAPIView.as_view(),
         name="updated-employe",
     ),
-    path("accounts/me/", AccountsMeAPIView.as_view(), name="me"),
+    path(
+        "accounts/me/employe/",
+        AccountsMeEmployeGenericlistAPIView.as_view(),
+        name="me-employe",
+    ),
+    path("accounts/me/", AccountsMeGenericListAPIView.as_view(), name="me"),
     path(
         "acounts/destroy/employe/<objects>",
         DestroyEmployeManyToMany.as_view(),

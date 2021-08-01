@@ -23,10 +23,13 @@ class UserActions:
             raise serializers.ValidationError(
                 {"message": _("Password don't match, please check again")}
             )
-        if not re.match(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', validated_data.get('email')):
-            raise serializers.ValidationError({
-                'message': _('Invalid email, please check again')
-            })
+        if not re.match(
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
+            validated_data.get("email"),
+        ):
+            raise serializers.ValidationError(
+                {"message": _("Invalid email, please check again")}
+            )
         create = User(
             username=validated_data.get("username"),
             email=validated_data.get("email"),

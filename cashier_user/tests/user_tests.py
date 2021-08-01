@@ -200,3 +200,12 @@ class Usertests(unittest.TestCase):
             self.assertEqual(response.data["message"], "Accounts has been updated")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.logger.info("updated employe")
+
+    @unittest.skipIf(User.objects.count() == 0 ,'user not have data')
+    @unittest.skipIf(not tokens,'tokens is expires')
+    def test_user_me_employe(self):
+        urls = reverse('me-employe')
+        self.e.credentials(HTTP_AUTHORIZATION="Bearer " + readme)
+        response = self.e.get(urls,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.logger.info('get me all employe')
