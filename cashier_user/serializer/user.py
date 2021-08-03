@@ -118,7 +118,7 @@ class AccountsModelSerializer(serializers.ModelSerializer):
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["accounts", "first_name","last_name",]
 
     accounts = serializers.SerializerMethodField("get_accounts_display")
 
