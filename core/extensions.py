@@ -16,5 +16,8 @@ def ext(app):
     db.init_app(app)
     migrate.init_app(app,db)
     api = Api(app)
-    from api_user.views.user import UserAPIView
-    api.add_resource(UserAPIView)
+    from api_user.views.user import UserAPIView, AuthToken, VerifyToken, RefreshToken
+    api.add_resource(UserAPIView, "/api/v1/user/")
+    api.add_resource(AuthToken, "/api/v1/user/login/")
+    api.add_resource(RefreshToken, "/api/v1/user/refresh/")
+    api.add_resource(VerifyToken, "/api/v1/user/verify/")
