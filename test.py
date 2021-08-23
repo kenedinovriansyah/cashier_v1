@@ -3,8 +3,6 @@ import logging
 import sys
 import unittest
 
-from api_user.tests.user_tests import UserTests
-
 coloredlogs.install()
 
 logging.basicConfig(
@@ -12,6 +10,8 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
+
+from api_user.tests.user_test import UserTests
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,39 +1,40 @@
-from flask import jsonify
-from flask_restful import Resource, reqparse
-from api_database.user import User
-from werkzeug.security import check_password_hash, generate_password_hash
-from core.extensions import db
 from datetime import datetime
+from api_database.user import User
+from api_user.utils.fields import parser
+from core.extensions import db
+from flask import jsonify, make_response
+from flask_api import status
+from flask_restful import Resource
+from werkzeug.security import generate_password_hash
 
-parser = reqparse.RequestParser()
-parser.add_argument("username")
-parser.add_argument("email")
-parser.add_argument("password")
+
 class UserAPIView(Resource):
-    def get(self):
-        return {"message": "Hello Worlds"}
 
+    def get(self):
+        return jsonify({
+            'message': 'Get getall'
+        })
+    
     def post(self):
         req = parser.parse_args()
-        db.session.add(User(
-            username=req.get('username'),
-            email=req.get('email'),
-            password=generate_password_hash(req.get('password')),
-            update_at=datetime.utcnow()
-        ))
+        check = User.query.filter((User.username == req.get('username')) | (User.email == req.get('email'))).first()
+        if check:
+            res = jsonify({
+                'message': 'Username or email already exists'
+            })
+            res.status = status.HTTP_400_BAD_REQUEST
+            return res
+        db.session.add(
+            User(
+                username=req.get('username'),
+                email=req.get('email'),
+                password=generate_password_hash(req.get('password')),
+                updateAt=datetime.utcnow()
+            )
+        )
         db.session.commit()
-        return jsonify({
-            'message': 'Hello Worlds'
+        res = jsonify({
+            'message': 'Accounts has been created'
         })
-
-class AuthToken(Resource):
-    def post(self):
-        return {'message': "login"}
-
-class RefreshToken(Resource):
-    def post(self):
-        return {'message': 'refresh'}
-
-class VerifyToken(Resource):
-    def post(self):
-        return {'message': 'verify'}
+        res.status = status.HTTP_201_CREATED
+        return res
