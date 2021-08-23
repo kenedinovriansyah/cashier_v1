@@ -23,4 +23,4 @@ jobs:
             python3 test.py
       - store_artifacts:
           path: test-reports/
-          destination: daily_finance
+          destination: daily_finance-
