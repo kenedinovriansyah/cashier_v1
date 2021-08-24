@@ -12,6 +12,7 @@ logging.basicConfig(
 )
 
 from api_user.tests.user_test import UserTests
+from api_daily_price.tests.daily_tests import DailyTests
 
 if __name__ == "__main__":
     unittest.main()

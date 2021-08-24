@@ -1,9 +1,11 @@
 from jwcrypto import jwk, jwt
 from flask_api import status
-from flask import jsonify, request
+from flask import jsonify, request, session
 from functools import wraps
 import ast
 import json
+from api_database.user import User
+
 
 class JsonWebToken:
     def generate(instance):
@@ -35,15 +37,26 @@ class JsonWebToken:
                 _x = ast.literal_eval(json.loads(json.dumps(_x.split('Bearer ')[1])))
                 key = jwk.JWK(**_x)
                 et = jwt.JWT(key=key,jwt=u"{}".format(_t.split("Bearer ")[1]))
-                st = jwt.JWT(key=key, jwt=et.claims)
-                res = jsonify(st.claims)
+                token = jwt.JWT(key=key, jwt=et.claims)
+                res = jsonify(json.loads(token.claims))
                 res.status = status.HTTP_200_OK
                 return res
             except ValueError:
                 res = jsonify({
                     'message': 'Token is invalid'
                 })
-                res.status = status.HTTP_400_BAD_REQUEST
+                res.status = status.HTTP_403_FORBIDDEN
                 return res
             return f(*args,**kwargs)
         return decorators
+
+    def current_user(_t,_x):
+        _x = ast.literal_eval(json.loads(json.dumps(_x.split('Bearer ')[1])))
+        key = jwk.JWK(**_x)
+        et = jwt.JWT(key=key,jwt=u"{}".format(_t.split("Bearer ")[1]))
+        token = jwt.JWT(key=key, jwt=et.claims)
+        user = User.query.filter_by(username=ast.literal_eval(json.loads(json.dumps(token.claims))).get('user')).first()
+        if not user:
+            return None
+        return user
+

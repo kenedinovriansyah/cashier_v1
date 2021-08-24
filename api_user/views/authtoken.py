@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask_api import status
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from core.jwt import JsonWebToken
 from api_database.user import User
 from api_user.utils.fields import parser
@@ -22,6 +22,4 @@ class VerifyToken(Resource):
 
     @JsonWebToken.verify
     def post(self):
-        return jsonify({
-            'message': 'token'
-        })
+        pass
